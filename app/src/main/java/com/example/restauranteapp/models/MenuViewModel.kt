@@ -56,17 +56,18 @@ class MenuViewModel : ViewModel() {
         }
     }
 
-    fun updateItem(item: MenuItem) {
+    fun updateItem(item: MenuItem, onCompletion: () -> Unit) {
         viewModelScope.launch {
             try {
-                // Usa el operador !! para asegurar que el ID no es nulo
                 val response = RetrofitInstance.api.updateItem(item.id!!, item)
                 if (response.isSuccessful) {
-                    fetchMenuItems()
                     _errorMessage.value = null
+                    fetchMenuItems()
+                    onCompletion() // Llama al callback al terminar
                 } else {
+                    val errorBody = response.errorBody()?.string()
                     _errorMessage.value = "Error al actualizar ítem: ${response.code()}"
-                    Log.e("API_CALL", "Error al actualizar ítem: ${response.code()}")
+                    Log.e("API_CALL", "Error al actualizar ítem: ${response.code()} - $errorBody")
                 }
             } catch (e: Exception) {
                 _errorMessage.value = "Error de red: ${e.message}"

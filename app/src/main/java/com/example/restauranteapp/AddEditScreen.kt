@@ -62,25 +62,33 @@ fun AddEditScreen(
         Button(
             onClick = {
                 val newPrice = price.toDoubleOrNull() ?: 0.0
-                val newItem = MenuItem(
-                    id = if (menuItem == null) null else menuItem.id,
-                    item_name = name,
-                    item_description = description,
-                    item_price = newPrice
-                )
 
                 if (menuItem == null) {
-                    // Llama a la nueva función del ViewModel
+                    val newItem = MenuItem(
+                        item_name = name,
+                        item_description = description,
+                        item_price = newPrice
+                    )
                     viewModel.createItem(newItem) {
-                        // Código que se ejecuta al finalizar
                         Toast.makeText(context, "¡Ítem creado con éxito!", Toast.LENGTH_SHORT).show()
-                        onItemSaved() // Navega de vuelta
+                        onItemSaved()
+                    }
+                } else {
+                    // Este es el bloque de código para la edición
+                    val updatedItem = menuItem.copy(
+                        item_name = name,
+                        item_description = description,
+                        item_price = newPrice
+                    )
+
+                    viewModel.updateItem(updatedItem) {
+                        Toast.makeText(context, "¡Ítem actualizado con éxito!", Toast.LENGTH_SHORT).show()
+                        onItemSaved()
                     }
                 }
-                // ... (lógica para editar)
             },
-            // ...
-        ){
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text(text = if (menuItem == null) "Guardar" else "Actualizar")
         }
     }
