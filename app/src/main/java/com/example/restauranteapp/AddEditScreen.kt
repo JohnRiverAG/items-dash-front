@@ -1,11 +1,13 @@
 package com.example.restauranteapp
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.restauranteapp.models.MenuViewModel
@@ -13,9 +15,19 @@ import com.example.restauranteapp.models.MenuViewModel
 @Composable
 fun AddEditScreen(
     viewModel: MenuViewModel = viewModel(),
-    menuItem: MenuItem? = null, // Usado para editar
-    onItemSaved: () -> Unit // Función para volver a la pantalla anterior
+    menuItem: MenuItem? = null,
+    onItemSaved: () -> Unit
 ) {
+    val context = LocalContext.current
+    val errorMessage by viewModel.errorMessage.collectAsState()
+
+    // Observar los errores y mostrarlos
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        }
+    }
+
     var name by remember { mutableStateOf(menuItem?.item_name ?: "") }
     var description by remember { mutableStateOf(menuItem?.item_description ?: "") }
     var price by remember { mutableStateOf(menuItem?.item_price?.toString() ?: "") }
@@ -50,16 +62,21 @@ fun AddEditScreen(
         Button(
             onClick = {
                 val newPrice = price.toDoubleOrNull() ?: 0.0
+                val newItem = MenuItem(
+                    id = if (menuItem == null) null else menuItem.id,
+                    item_name = name,
+                    item_description = description,
+                    item_price = newPrice
+                )
+
                 if (menuItem == null) {
-                    // Si no hay un ítem, creamos uno nuevo con un ID temporal
-                    val newItem = MenuItem(0, name, description, newPrice)
                     viewModel.createItem(newItem)
                 } else {
-                    // Si hay un ítem, lo actualizamos
-                    val updatedItem = menuItem.copy(item_name = name, item_description = description, item_price = newPrice)
-                    viewModel.updateItem(updatedItem)
+                    viewModel.updateItem(newItem)
                 }
-                onItemSaved()
+
+                // Nota: La navegación se hará después de que la operación sea exitosa
+                // Para esto se puede usar un evento en el ViewModel
             },
             modifier = Modifier.fillMaxWidth()
         ) {
