@@ -70,16 +70,17 @@ fun AddEditScreen(
                 )
 
                 if (menuItem == null) {
-                    viewModel.createItem(newItem)
-                } else {
-                    viewModel.updateItem(newItem)
+                    // Llama a la nueva función del ViewModel
+                    viewModel.createItem(newItem) {
+                        // Código que se ejecuta al finalizar
+                        Toast.makeText(context, "¡Ítem creado con éxito!", Toast.LENGTH_SHORT).show()
+                        onItemSaved() // Navega de vuelta
+                    }
                 }
-
-                // Nota: La navegación se hará después de que la operación sea exitosa
-                // Para esto se puede usar un evento en el ViewModel
+                // ... (lógica para editar)
             },
-            modifier = Modifier.fillMaxWidth()
-        ) {
+            // ...
+        ){
             Text(text = if (menuItem == null) "Guardar" else "Actualizar")
         }
     }

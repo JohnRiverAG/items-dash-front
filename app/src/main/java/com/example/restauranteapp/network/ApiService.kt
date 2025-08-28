@@ -11,9 +11,9 @@ interface ApiService {
     @POST("items/")
     suspend fun createItem(@Body item: MenuItem): Response<MenuItem>
 
-    @PUT("items/{id}")
+    @PUT("items/{id}/")
     suspend fun updateItem(@Path("id") id: Long, @Body item: MenuItem): Response<MenuItem>
 
-    @DELETE("items/{id}")
+    @DELETE("items/{id}/")
     suspend fun deleteItem(@Path("id") id: Long): Response<Void>
 }

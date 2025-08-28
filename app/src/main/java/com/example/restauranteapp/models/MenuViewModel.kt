@@ -36,13 +36,14 @@ class MenuViewModel : ViewModel() {
         }
     }
 
-    fun createItem(item: MenuItem) {
+    fun createItem(item: MenuItem, onCompletion: () -> Unit) {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.api.createItem(item)
                 if (response.isSuccessful) {
-                    fetchMenuItems()
                     _errorMessage.value = null
+                    fetchMenuItems() // Refresca la lista
+                    onCompletion() // Llama al callback
                 } else {
                     val errorBody = response.errorBody()?.string()
                     _errorMessage.value = "Error al crear ítem: ${response.code()}"
