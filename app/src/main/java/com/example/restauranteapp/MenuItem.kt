@@ -1,3 +1,6 @@
+
+
+//Archivo con el modelo de datos de la BD
 package com.example.restauranteapp
 
 data class MenuItem(
