@@ -43,8 +43,8 @@ fun MenuScreen(
             items(menuItems) { item ->
                 MenuItemCard(
                     item = item,
-                    onEditClick = { onEditClick(it.id) },
-                    onDeleteClick = { viewModel.deleteItem(it.id) }
+                    onEditClick = { onEditClick(item.id!!) }, // Ahora le decimos que el ID no es nulo
+                    onDeleteClick = { viewModel.deleteItem(item.id!!) }
                 )
             }
         }

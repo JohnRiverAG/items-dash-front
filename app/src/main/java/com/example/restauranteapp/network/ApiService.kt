@@ -5,10 +5,10 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
-    @GET("items")
+    @GET("items/")
     suspend fun getAllItems(): Response<List<MenuItem>>
 
-    @POST("items")
+    @POST("items/")
     suspend fun createItem(@Body item: MenuItem): Response<MenuItem>
 
     @PUT("items/{id}")

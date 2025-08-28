@@ -58,7 +58,8 @@ class MenuViewModel : ViewModel() {
     fun updateItem(item: MenuItem) {
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.api.updateItem(item.id, item)
+                // Usa el operador !! para asegurar que el ID no es nulo
+                val response = RetrofitInstance.api.updateItem(item.id!!, item)
                 if (response.isSuccessful) {
                     fetchMenuItems()
                     _errorMessage.value = null
